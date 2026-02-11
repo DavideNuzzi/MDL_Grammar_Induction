@@ -35,7 +35,7 @@ Where:
 from grammar_model import GrammarModel
 
 # Define a sequence with motifs: (A,B), (C,D), (A,B,C,D) and (A,C,E)
-sequence = [*['A','B','C','D','|']*4, *['A','B']*3, *['C','D']*3, *['A','C','E']*2]
+sequence = [*['A','B','C','D','|']*4, *['A','B','|']*3, *['C','D','|']*3, *['A','C','E','|']*2]
 
 # Initialize the model
 grammar_model = GrammarModel(
