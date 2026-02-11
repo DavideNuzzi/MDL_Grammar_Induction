@@ -53,7 +53,7 @@ grammar_model.fit(rule_label='rule', verbose=True)
 plot_grammar_expanded(grammar_model)
 ```
 
-![Grammar Hierarchy Visualization](example_plot.png)
+![Grammar Hierarchy Visualization](assets/example_plot.png)
 
 ---
 
