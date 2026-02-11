@@ -20,11 +20,11 @@ This project implements a greedy optimization algorithm  that iteratively replac
 
 The model minimizes the total **Description Length** ($DL$), defined by the formula:
 
-$$DL = L(Data | Model) + \lambda \cdot L(Model)$$
+$$ \mathrm{DL} = L(\mathrm{Data} | \mathrm{Model}) + \lambda \cdot L(\mathrm{Model})$$
 
 Where:
-* **$L(Data | Model)$**: The bits required to encode the sequence using the current vocabulary.
-* **$L(Model)$**: The bits required to encode the grammar rules (the "dictionary").
+* **$L(\mathrm{Data} | \mathrm{Model})$**: The bits required to encode the sequence using the current vocabulary.
+* **$L( \mathrm{Model})$**: The bits required to encode the grammar rules (the "dictionary").
 * **$\lambda$**: The `mdl_model_cost` hyperparameter that weights the grammar complexity.
 
 ---
@@ -34,12 +34,12 @@ Where:
 ```python
 from grammar_model import GrammarModel
 
-# Define a sequence with motifs: (A,B,C,D) and (A,C,E)
-seq_input = ['A','B','C','D','|','A','B','C','D','|','A','B','|','A','C','E','|']
+# Define a sequence with motifs: (A,B), (C,D), (A,B,C,D) and (A,C,E)
+sequence = [*['A','B','C','D','|']*4, *['A','B']*3, *['C','D']*3, *['A','C','E']*2]
 
 # Initialize the model
 grammar_model = GrammarModel(
-    seq_input, 
+    sequence, 
     separator='|', 
     mdl_model_cost=0.3, 
     rule_len_min=2, 
@@ -50,15 +50,17 @@ grammar_model = GrammarModel(
 grammar_model.fit(rule_label='rule', verbose=True)
 
 # Visualize the induction result
-grammar_model.plot_grammar(node_color_mode='recursive_count')
+plot_grammar_expanded(grammar_model)
 ```
+
+![Grammar Hierarchy Visualization](example_plot.png)
 
 ---
 
 ## Installation
 
 ```bash
-git clone [https://github.com/yourusername/grammar-induction.git](https://github.com/yourusername/grammar-induction.git)
-cd grammar-induction
+git clone [https://github.com/DavideNuzzi/MDL_Grammar_Induction.git](https://github.com/DavideNuzzi/MDL_Grammar_Induction.git)
+cd MDL_Grammar_Induction
 pip install -r requirements.txt
 ```
