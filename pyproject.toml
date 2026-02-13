@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mdl_grammar"
+version = "0.1.0"
+description = "Minimum Description Length (MDL) based grammar induction model"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "Davide Nuzzi"}
+]
+
+dependencies = [
+    "numpy",
+    "networkx",
+    "matplotlib",
+    "tqdm",
+]
+
+[tool.setuptools]
+packages = ["mdl_grammar"]

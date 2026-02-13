@@ -4,7 +4,7 @@ from collections import Counter
 from matplotlib import pyplot as plt
 import matplotlib as mpl
 from matplotlib.patches import FancyBboxPatch, Rectangle, FancyArrowPatch
-from grammar_models import GrammarModel
+from mdl_grammar.grammar_models import GrammarModel
 
 
 # Instead of plotting the specific symbol we replace it with the whole
