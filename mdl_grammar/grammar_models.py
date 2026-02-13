@@ -7,6 +7,28 @@ from matplotlib import pyplot as plt
 import matplotlib as mpl
 
 
+class GrammarMetrics:
+
+    def __init__(self, levels, depth, symbols_count, symbols_recursive_count, levels_total_count):
+
+        self.levels = levels # A list of rules for each level in the grammar
+        self.depth = depth  # Depth of the grammar three
+        self.symbols_count = symbols_count  # Occurrences of the symbol in the final sequence
+        self.symbols_recursive_count = symbols_recursive_count   # Recursive occurrences (also inside other rules) of the symbol in the final sequence
+        self.levels_total_count = levels_total_count # Number of occurrences of symbols for each level
+
+    def __str__(self):
+        s  = f'Grammar levels: {self.levels}\n'
+        s += f'Grammar depth: {self.depth}\n'
+        s += f'Occurrences per symbol: {self.symbols_count}\n'
+        s += f'Occurrences total (recursive count) {self.symbols_recursive_count}\n'
+        s += f'Occurrences per level {self.levels_total_count}\n'
+        return s
+    
+    def __repr__(self):
+        return self.__str__()
+
+
 class GrammarModel:
 
     def __init__(self, sequence, separator, mdl_model_cost=1, rule_len_min=2, rule_len_max=2):
@@ -32,6 +54,9 @@ class GrammarModel:
         # Store some information about the input data
         self.sequence_init = sequence
         self.vocabulary_init = self.vocabulary
+
+        # Declare the metrics object which will be computed after a fit
+        self.metrics : GrammarMetrics
         
 
     def compute_description_length(self, sequence, grammar, vocabulary):
@@ -283,6 +308,8 @@ class GrammarModel:
             if not verbose:
                 pbar.set_postfix({'mdl': mdl, 'mdl_proposed': mdl_new, 'Seq len': len(self.sequence), 'vocab len': len(self.vocabulary), 'grammar len': len(self.grammar)})
 
+        # Compute metrics
+        self.compute_grammar_metrics()
 
     def get_grammar_graph(self):
 
@@ -412,6 +439,36 @@ class GrammarModel:
 
         return expanded_grammar
 
+
+    # Compute properties of the grammar (like the depth, symbols per layer, occurrences per layer, etc)
+    def compute_grammar_metrics(self):
+    
+        # Count the occurrences of each symbol both normally and recursively
+        symbols_count = self.get_counts()
+        symbols_recursive_count = self.get_recursive_counts()
+
+        # For each rule compute the depth in the graph
+        levels = self.get_grammar_depth()
+        
+        # Reverse the dict to make it simpler to ask for all rules at a specific level
+        rules_by_level = {}
+        for r, l in levels.items():
+            if l not in rules_by_level:
+                rules_by_level[l] = []
+            rules_by_level[l].append(r)
+        
+        # Grammar detph
+        depth = max(levels.values())
+        
+        # Occurrences per layer
+        levels_total_count = {level: sum([symbols_count[sym] for sym in level_sym]) for level, level_sym in rules_by_level.items()}
+        
+        self.metrics = GrammarMetrics(levels=rules_by_level, depth=depth, symbols_count=symbols_count,
+                                 symbols_recursive_count=symbols_recursive_count,
+                                 levels_total_count=levels_total_count)
+
+
+    
 
     def plot_grammar(self, ax=None, fig=None, original_symbols_order=None, 
                               node_color_mode='count', node_size=100, node_spacing=2.0, node_shape='s',
